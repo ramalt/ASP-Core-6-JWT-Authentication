@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using TodoAPI.Dtos.Auth;
 using TodoAPI.Dtos.Auth.Request;
 using TodoAPI.Dtos.Auth.Response;
 using TodoAPI.Services;
@@ -45,12 +46,9 @@ public class AuthController : ControllerBase
             IdentityResult? created = await _userManager.CreateAsync(newUser, user.Password);
             if (created.Succeeded)
             {
+                AuthResult authResult = await _jwtService.GenerateToken(newUser);
                 //return a token
-                return Ok(new RegisterResponseDTO()
-                {
-                    Token = _jwtService.GenerateToken(newUser),
-                    Success = true
-                });
+                return Ok(authResult);
             }
             else
             {
@@ -88,12 +86,9 @@ public class AuthController : ControllerBase
             bool isUserCorrect = await _userManager.CheckPasswordAsync(existingUser, user.Password);
             if (isUserCorrect)
             {
+                AuthResult authResult = await _jwtService.GenerateToken(existingUser);
                 //return a token
-                return Ok(new RegisterResponseDTO()
-                {
-                    Token = _jwtService.GenerateToken(existingUser),
-                    Success = true
-                });
+                return Ok(authResult);
             }
             else
             {
@@ -112,4 +107,38 @@ public class AuthController : ControllerBase
         });
     }
 
+    [HttpPost("refreshtoken")]
+    public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDTO tokenRequest)
+    {
+        if (ModelState.IsValid)
+        {
+            var verified = await _jwtService.VerifyToken(tokenRequest);
+            //
+            if (!verified.Success)
+            {
+                return BadRequest(new AuthResult()
+                {
+                    // Errors = new List<string> { "invalid Token" },
+                    Errors = verified.Errors,
+                    Success = false
+                });
+            }
+
+            var tokenUser = await _userManager.FindByIdAsync(verified.UserId);
+            AuthResult authResult = await _jwtService.GenerateToken(tokenUser);
+            //return a token
+            return Ok(authResult);
+
+
+        }
+
+        return BadRequest(new AuthResult()
+        {
+            Errors = new List<string> { "invalid Payload" },
+            Success = false
+        });
+
+
+
+    }
 }

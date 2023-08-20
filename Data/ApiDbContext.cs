@@ -12,4 +12,5 @@ public class ApiDbContext : IdentityDbContext
     }
 
     public virtual DbSet<Todo> Todos { get; set; }
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 }
