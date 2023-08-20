@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TodoAPI.Models;
 
 namespace TodoAPI.Data;
 
-public class ApiDbContext : DbContext
+public class ApiDbContext : IdentityDbContext
 {
     public ApiDbContext(DbContextOptions<ApiDbContext> opt) : base(opt)
     {
