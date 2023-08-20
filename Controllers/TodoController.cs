@@ -27,7 +27,7 @@ public class TodoController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTodoById(int id)
     {
-        Todo todo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == id);
+        Todo? todo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == id);
         if (!todo.Equals(null))
         {
             return Ok(todo);
@@ -59,7 +59,7 @@ public class TodoController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateTodo(int id, UpdateTodoDTO todo)
     {
-        Todo existingTodo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == id);
+        Todo? existingTodo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == id);
 
         if (existingTodo.Equals(null)) throw new ArgumentException($"Todo with ID: {id} not found");
 
@@ -81,7 +81,7 @@ public class TodoController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTodo(int id)
     {
-        Todo existingTodo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == id);
+        Todo? existingTodo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == id);
 
         if (existingTodo.Equals(null)) throw new ArgumentException($"Todo with ID: {id} not found");
 
