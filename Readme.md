@@ -11,6 +11,16 @@ JWT authentication in .NET 6 Core with basic todo app.
 - Login & register operations with JWT tokens.
 - JWT refresh token feature for regenerating JWT tokens.
 
+## Endpoints
+- POST - /api/auth/register
+- GET - /api/auth/login
+
+### Protected
+- GET    - /api/todo
+- GET    - /api/todo/{id}
+- PUT    - /api/todo/{id}
+- POST   - /api/todo
+- DELETE - /api/todo/{id}
 
 ## Tech Stack
 
